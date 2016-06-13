@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:h="http://xmlns.jcp.org/jsf/html"
+             template="templatePrincipal.xhtml"
+             xmlns:p="http://primefaces.org/ui"
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:outputStylesheet library="css" name="jquery-ui.min2.css"/>
+    <h:outputStylesheet library="css" name="estilo.css"/>
+
+
+
+    <div class="tabela" >
+
+        <h:form id="form" >
+
+            <p:growl id="growl" sticky="true" autoUpdate="true" />  
+            <p:dataTable id="tabela" value="#{softwareBean.lista}" var="software" 
+                         paginator="true" rows="6" >   
+
+                <f:facet name="header">
+                    <p:outputLabel  value="Faça login  para avaliar" rendered="#{empty sessionScope['usuario-logado']}"/>                
+                </f:facet>          
+
+                <f:facet name="header">
+
+                    <p:commandButton value="Login" actionListener="#{softwareBean.novo}" 
+                                     disabled ="#{!empty sessionScope['usuario-logado']}"
+                                     oncomplete="PF('login').show();" update=":form :form:tabela"/>
+                </f:facet>
+                <f:facet name="header">
+                    <p:commandButton value="Sair" action="#{validador.sair()}" 
+                                     disabled="#{empty sessionScope['usuario-logado']}" 
+                                     update=":form :form:tabela" />
+                </f:facet>
+                <p:column headerText="Nome" sortBy="#{software.nome}" filterBy="#{software.nome}">
+                    <h:outputText value="#{software.nome}"></h:outputText>
+                </p:column>
+                <p:column headerText="Descrição" sortBy="#{software.descricao}" filterBy="#{software.descricao}">
+                    <h:outputText value="#{software.descricao}"></h:outputText>
+                </p:column>
+                <p:column headerText="Categoria" sortBy="#{software.categoria}" filterBy="#{software.categoria}">
+                    <h:outputText value="#{software.categoria}"></h:outputText>
+                </p:column>
+                <p:column headerText="Avaliação" sortBy="#{software.media}" filterBy="#{software.media}" width="14%">
+                    <p:rating value="#{software.media}" stars="10" disabled="true"/>
+                </p:column>
+                <p:column class="votos" headerText="Total de votos" sortBy="#{software.totalVotos}" filterBy="#{software.totalVotos}">
+                    <h:outputText value="#{software.totalVotos}"></h:outputText>
+                </p:column>
+                <p:column headerText="Opções" >
+
+                    <p:commandButton  icon="fa fa-comment-o" title="Avaliar" actionListener="#{comentarioB.recuperaSoftware}" 
+                                     oncomplete="PF('comentar').show();"
+                                     disabled ="#{empty sessionScope['usuario-logado']}" 
+                                     update=":form :form:growl :form:tabela">
+
+                        <f:attribute name="softwareParaComentar" value="#{software}" />
+                    </p:commandButton>
+                    <p:commandButton  icon="fa fa-download" title="Baixar" action="#{softwareBean.baixar(software)}" 
+                                     disabled ="#{empty sessionScope['usuario-logado']}"
+                                     rendered="#{not empty software.url}"
+                                     update=":form :form:growl :form:tabela">
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
+
+            <!--Caixas de dialogos da página-->
+
+            <p:dialog header="Escreva seu comentário" widgetVar="comentar" showEffect="explode" hideEffect="bounce" height="100%" width="50%" resizable="false">
+                <p:panelGrid columns="2">
+                    <h:outputText value="Sua nota"/>
+                    <p:rating value="#{comentarioB.nota}" stars="10" disabled="#{sessionScope['usuario-logado'].tipo eq 'desenvolvedor'}"/>
+
+                    <p:outputLabel value="Comentário"/>
+                    <p:inputTextarea value="#{comentarioB.campoComentario}" rows="7" cols="30" counter="disp" 
+                                     maxlength="256" counterTemplate="{0} caracteres restantes." autoResize="true" />
+                    <p:outputLabel id="disp"/>
+
+                </p:panelGrid>
+                <p:commandButton value="Enviar comentário" action="#{comentarioB.comentar}" update=":form :form:growl :form:tabela" />
+
+            </p:dialog>
+
+            <p:dialog  id="logar" header="Entrar" widgetVar="login" showEffect="explode" 
+                       height="30%" width="25%" resizable="false">
+
+                <p:panelGrid columns="2">
+                    <h:outputLabel value="Login"></h:outputLabel>
+                    <p:inputText value="#{validador.login}"></p:inputText>
+
+                    <h:outputLabel value="Senha"></h:outputLabel>
+                    <p:password value="#{validador.senha}"/>
+                </p:panelGrid>
+                <p:panelGrid columns="2" style="margin-left: 10%">
+                    <p:commandButton value="Entrar" action="#{validador.logarComentar()}" update="form :form:logar" />
+                    <p:commandButton value="Cancelar" oncomplete="PF('login').hide();" update="form :form:logar" />
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+    </div>
+</ui:decorate>
+

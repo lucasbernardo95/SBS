@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:h="http://xmlns.jcp.org/jsf/html"
+             xmlns:p="http://primefaces.org/ui"
+             xmlns:f="http://xmlns.jcp.org/jsf/core"
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             template="template.xhtml">
+    <div class="tabela">
+        <h:form id="admin">
+            <p:growl autoUpdate="true"/>
+            <p:dataTable rendered="#{usuarioBean.gerenciarUsuario eq true}" value="#{usuarioBean.listaUsuario}" var="usuario" id="listaUsuario" widgetVar="cellUsuario"
+                         paginator="true" rows="10" editable="true" paginatorPosition="top">
+
+                <p:ajax event="rowEdit" listener="#{usuarioBean.linhaEditada}" />
+                <p:ajax event="rowEditCancel" listener="#{usuarioBean.cancelaAlteracao}" />
+
+                <p:column headerText="Opções" width="10%">
+                    <p:commandButton icon="fa fa-trash-o" title="Excluir" actionListener="#{usuarioBean.excluir}"
+                                     disabled="#{usuario.id eq sessionScope['usuario-logado'].id}"
+                                     update=":admin :admin:listaUsuario">
+                        <p:confirm header="Confirmação" message="Deseja excluir o software?"
+                                   icon="ui-icon-alert" />
+                        <f:attribute name="usuarioSelecionado" value="#{usuario}" />
+                    </p:commandButton>
+                    <!-- <p:rowEditor style="float: left;" id="botaoEditor"/> essa tag serve para habilitar a opção de alterar usuários-->
+                </p:column>
+                <p:column headerText="ID" sortBy="#{usuario.id}" filterBy="#{usuario.id}" width="7%">
+                    <h:outputText value="#{usuario.id}"></h:outputText>
+                </p:column>
+                <p:column headerText="Nome" sortBy="#{usuario.nome}" filterBy="#{usuario.nome}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{usuario.nome}"/> </f:facet>
+                        <f:facet name="input"><h:inputText value="#{usuario.nome}"/></f:facet>
+                    </p:cellEditor>            
+                </p:column>
+                <p:column headerText="Login" sortBy="#{usuario.login}" filterBy="#{usuario.login}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{usuario.login}"/> </f:facet>
+                        <f:facet name="input"><h:inputText value="#{usuario.login}"/></f:facet>
+                    </p:cellEditor>  
+                </p:column>
+                <p:column headerText="E-mail" sortBy="#{usuario.email}" filterBy="#{usuario.email}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{usuario.email}"/> </f:facet>
+                        <f:facet name="input"><h:inputText value="#{usuario.email}"/></f:facet>
+                    </p:cellEditor>  
+                </p:column>
+                <p:column headerText="Tipo de usuário" sortBy="#{usuario.tipo}" filterBy="#{usuario.tipo}">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{usuario.tipo}"/> </f:facet>
+                        <f:facet name="input"><h:inputText value="#{usuario.tipo}"/></f:facet>
+                    </p:cellEditor>  
+                </p:column>
+            </p:dataTable>
+            <!--dialogo para confirmação do botão exclcuir-->
+            <p:confirmDialog global="true">
+                <p:commandButton value="Sim" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+
+            <!--Tela para editar o admin-->
+            <p:panelGrid id="edit" columns="2" rendered="#{usuarioBean.editarDados eq true}" >
+                <f:facet name="header">
+                    <p:panel header="Dados de #{usuarioBean.usuarioSessao.nome}"/>
+                </f:facet>
+
+                <h:outputText value="Nome:" />
+                <p:inputText value="#{usuarioBean.usuarioSessao.nome}" />
+
+                <h:outputText value="E-mail:" />
+                <p:inputText value="#{usuarioBean.usuarioSessao.email}" />
+
+                <h:outputText value="Login:" />
+                <p:inputText value="#{usuarioBean.usuarioSessao.login}" />
+
+                <h:outputText value="Senha:" />
+                <p:inputText value="#{usuarioBean.usuarioSessao.senha}" />
+                <p:outputLabel/>
+                <p:commandButton value="Salvar" actionListener="#{usuarioBean.atualiza()}" style="margin-left: 25%">
+                    <p:confirm header="Confirmação" message="Deseja salvar as alterações?"
+                               icon="ui-icon-alert" />
+                </p:commandButton>
+            </p:panelGrid>
+
+            <!--Tela para cadastrar um novo admin-->
+            <p:fieldset class="field" legend="Cadastrar" rendered="#{usuarioBean.cadastrarAdmin eq true}" >
+
+                <p:panelGrid columns="2" >
+                    <p:outputLabel value="Nome"/>
+                    <p:inputText value="#{usuarioBean.entidade.nome}"></p:inputText>
+
+                    <p:outputLabel value="Login"/>
+                    <p:inputText value="#{usuarioBean.entidade.login}"></p:inputText>
+
+                    <p:outputLabel value="Senha"/>
+                    <p:password value="#{usuarioBean.entidade.senha}"/>
+
+                    <p:outputLabel value="E-mail"/>
+                    <p:inputText value="#{usuarioBean.entidade.email}"/>
+
+                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="2">
+                        <p:selectOneRadio id="console" value="#{usuarioBean.entidade.tipo}">
+                            <f:selectItem itemLabel="Administrador" itemValue="administrador" />
+                        </p:selectOneRadio>
+                    </h:panelGrid>
+                    <p:commandButton value="Salvar" icon="/resources/imagens/cadastro.png" action="#{usuarioBean.cadastrar()}" update=":admin"/> 
+                </p:panelGrid>
+
+            </p:fieldset>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="Sim" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":admin :admin:edit"/>
+                <p:commandButton value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+            <!--Tabela para listagem dos software cadastrados-->
+            <p:dataTable rendered="#{usuarioBean.gerenciarSoftware eq true}" id="tabelaSoftware" value="#{softwareBean.lista}" var="software" 
+                         paginator="true" rows="4" >   
+
+                <p:column headerText="" width="15%">
+                    <div class="row"  >
+                        <div class="col-md-1" style="width: 40px">
+                            <p:commandButton icon="fa fa-trash-o" title="Excluir" actionListener="#{softwareBean.excluir}"
+                                             update=":admin :admin:tabelaSoftware">
+                                <p:confirm header="Confirmação" message="Deseja excluir o software?"
+                                           icon="ui-icon-alert" />
+                                <f:attribute name="softwareSelecionado" value="#{software}" />
+                            </p:commandButton>
+                        </div>
+
+                        <div class="col-md-1" style="width: 40px">  
+                            <p:commandButton  icon="fa fa-download" title="Baixar" action="#{softwareBean.baixar(software)}" 
+                                              disabled ="#{empty sessionScope['usuario-logado']}"
+                                              rendered="#{not empty software.url}"
+                                              update=":admin :admin:tabelaSoftware">
+                            </p:commandButton>
+                        </div> 
+                        <div class="col-md-1" style="width: 40px">    
+                            <p:commandButton   icon="fa fa-comments-o" title="Ver comentários" actionListener="#{comentarioB.mostrarComentariosDoSoftware}" 
+                                               oncomplete="PF('exibeComentarios').show();"
+                                               disabled ="#{empty sessionScope['usuario-logado']}" 
+                                               update=":admin :admin:tabelaSoftware">
+
+                                <f:attribute name="softwareParaComentar" value="#{software}" />
+                            </p:commandButton>
+
+
+                        </div> 
+
+                        <div class="col-md-1" style="width: 60px">    <!---->
+                            <p:commandButton   icon="fa fa-comment-o" title="Comentar" actionListener="#{comentarioB.recuperaSoftware}" 
+                                               oncomplete="PF('comentar').show();"
+                                               disabled ="#{empty sessionScope['usuario-logado']}" 
+                                               update=":admin :admin:tabelaSoftware">
+
+                                <f:attribute name="softwareParaComentar" value="#{software}" />
+                            </p:commandButton> 
+                        </div></div>    
+                </p:column>
+
+                <p:column headerText="Nome" sortBy="#{software.nome}" filterBy="#{software.nome}">
+                    <h:outputText value="#{software.nome}"></h:outputText>
+                </p:column>
+                <p:column headerText="Descrição" sortBy="#{software.descricao}" filterBy="#{software.descricao}">
+                    <h:outputText value="#{software.descricao}"></h:outputText>
+                </p:column>
+                <p:column headerText="Categoria" class="colunasCategoria" sortBy="#{software.categoria}" filterBy="#{software.categoria}" width="14%">
+                    <h:outputText value="#{software.categoria}"></h:outputText>
+                </p:column>
+                <p:column headerText="Avaliação" sortBy="#{software.media}" filterBy="#{software.media}" width="14%">
+                    <p:rating value="#{software.media}" stars="10" disabled="true"/>
+                </p:column>
+                <p:column class="votos" headerText="Total de votos" sortBy="#{software.totalVotos}" filterBy="#{software.totalVotos}">
+                    <h:outputText value="#{software.totalVotos}"></h:outputText>
+                </p:column>
+            </p:dataTable>
+
+            <!--Caixa de diálogo para realizar comentário sobre o software selecionado-->
+            <p:dialog header="Escreva seu comentário" widgetVar="comentar" showEffect="explode" 
+                      hideEffect="bounce" height="100%" width="50%" resizable="false">
+                <p:panelGrid columns="2">
+                    <h:outputText value="Sua nota"/>
+                    <p:rating value="#{comentarioB.nota}" stars="10"/>
+
+                    <p:outputLabel value="Comentário"/>
+                    <p:inputTextarea value="#{comentarioB.campoComentario}" rows="7" cols="30" counter="disp" 
+                                     maxlength="256" counterTemplate="{0} caracteres restantes." autoResize="true" />
+                    <p:outputLabel id="disp"/>
+
+                </p:panelGrid>
+                <p:commandButton value="Enviar comentário" action="#{comentarioB.comentar}" update=":admin" />
+
+            </p:dialog>
+
+            <!--Tabela resposável por exibir os comentários de um software que foi escolhido na tabela dos software-->
+            <p:dialog  id="exibeComentarios" header="Comentários do software #{comentarioB.software.nome}" widgetVar="exibeComentarios" showEffect="explode" 
+                       width="90%" resizable="false">
+
+                <p:dataTable id="tabelaComentario" value="#{comentarioB.listaComentarios}" var="coment" 
+                             paginator="true" rows="6"  > 
+                    <p:column headerText="" width="10%">
+                        <p:commandButton value="Excluir" actionListener="#{comentarioB.excluirComentario}"
+                                         update=":admin">
+                            <p:confirm header="Confirmação" message="Deseja excluir o comentário?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="comentarioSelecionado" value="#{coment}" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="Comentário" sortBy="#{coment.comentario}" filterBy="#{coment.comentario}">
+                        <h:outputText value="#{coment.comentario}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Usuário" sortBy="#{coment.usuario.nome}" filterBy="#{coment.usuario.nome}">
+                        <h:outputText value="#{coment.usuario.nome}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Avaliação" sortBy="#{software.media}" filterBy="#{software.media}" width="20%">
+                        <p:rating value="#{software.media}" stars="10" disabled="true"/>
+                    </p:column>
+
+                </p:dataTable>  
+            </p:dialog>
+
+        </h:form>
+    </div>
+</ui:decorate>
+

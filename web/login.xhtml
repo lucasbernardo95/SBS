@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:h="http://xmlns.jcp.org/jsf/html"
+             template="templatePrincipal.xhtml"
+             xmlns:p="http://primefaces.org/ui"
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:outputStylesheet library="css" name="jquery-ui.min2.css"/>
+    <h:outputStylesheet library="css" name="estilo.css"/>
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/> 
+    <div class="row" id="galeria">
+        <div class="col-md-6">
+            <h:form id="form1" >
+                <p:growl autoUpdate="true" />
+                <p:fieldset class="field" legend="Logar" >
+                    <p:panelGrid columns="2">
+
+                        <h:outputLabel value="Login"></h:outputLabel>
+                        <p:inputText value="#{validador.login}"></p:inputText>
+
+                        <h:outputLabel value="Senha"></h:outputLabel>
+                        <p:password value="#{validador.senha}"/>
+
+                        <p:commandButton icon="fa fa-check" value="Entrar" action="#{validador.autenticar()}" update="form1"/> 
+                        <p:commandButton icon="fa fa-user-plus" value="Cadastre-se" action="#{usuarioBean.novo()}" update="cadastro"/>
+
+                    </p:panelGrid>
+                </p:fieldset>  
+            </h:form>
+            <h:form id="cadastro">
+                <p:fieldset class="field" legend="Cadastrar" rendered="#{usuarioBean.mostraCadastro eq true}">
+
+                    <p:panelGrid columns="2" >
+                        <p:outputLabel value="Nome"/>
+                        <p:inputText value="#{usuarioBean.entidade.nome}"></p:inputText>
+
+                        <p:outputLabel value="Login"/>
+                        <p:inputText value="#{usuarioBean.entidade.login}"></p:inputText>
+
+                        <p:outputLabel value="Senha"/>
+                        <p:password value="#{usuarioBean.entidade.senha}"/>
+
+                        <p:outputLabel value="E-mail"/>
+                        <p:inputText value="#{usuarioBean.entidade.email}"/>
+
+                        <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                            <p:selectOneRadio id="console" value="#{usuarioBean.entidade.tipo}">
+                                <f:selectItem itemLabel="Cliente" itemValue="cliente" />
+                                <f:selectItem itemLabel="Desenvolvedor" itemValue="desenvolvedor" />
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        <p:commandButton value="Salvar" icon="fa fa-plus-circle" action="#{usuarioBean.cadastrar()}" update="cadastro"/> 
+                    </p:panelGrid>
+                </p:fieldset>    
+            </h:form>
+
+        </div>
+        <div class="col-md-6">
+            <h2>Encontre seus softwares preferidos em um só lugar !</h2>
+            <br/><br/>
+            <img src="resources/imagens/softwares.png" width="600" ></img>
+
+
+        </div>
+    </div>
+
+
+</ui:decorate>
+

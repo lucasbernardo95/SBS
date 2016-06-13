@@ -1,0 +1,73 @@
+#login-dialog{
+    width: 260px;
+    margin:auto;
+    margin-top:150px;	
+}
+
+.grid-login{
+    background-color: #f2f2f2;
+    border-radius: 80px;
+    border: 1px solid #ccc;
+    margin-top: 8px;
+    padding: 10px;
+    width: 100%;	
+}
+
+#body{
+  
+ 
+}
+#corpo{
+  background-color: #d0d9ff;
+
+}
+
+.field{
+    
+    
+    
+}
+
+#menu{
+   
+    background-color: blue;
+}
+
+#perfil{
+    border-radius: 40px;
+    border: solid 1px;
+    padding: 100px;
+    width: 100%;
+    border-color: black;
+}
+
+#rodape{
+    padding:auto;
+    padding-bottom: 12px;
+    padding-top: 20px;
+    background-color: graytext; 
+    
+}
+#logintable{
+    margin-bottom: 230px;
+    
+}
+#galeria{   
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 10px;  
+}
+#botoes{
+    align-items: flex-start;
+}
+
+.tabela{    
+    padding: 5%;
+}
+.votos{
+    width: 9%
+}
+
+.categoria{
+    width: 12%
+}

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>SBF</title>
+<h:outputStylesheet library="css" name="jquery-ui.min2.css"/>
+    <h:outputStylesheet library="css" name="estilo.css"/>
+<h:outputStylesheet library="css" name="bootstrap.min.css"/> 
+
+    </h:head>
+    <h:body onload="#{usuarioBean.iniciaListaUsuario()}" id="corpo"> 
+        <h:form>
+            <p:megaMenu>
+                <p:submenu label="Administração" icon="ui-icon-gear">
+                    <p:column>
+                        <p:submenu label="Gerênciar">
+                            <p:menuitem actionListener="#{usuarioBean.exibeTabela(true, false, false, false)}" value="Gerenciar Usuários" update=":admin" icon="ui-icon-disk" />
+                            <p:menuitem actionListener="#{usuarioBean.exibeTabela(false, true, false, false)}" value="Gerenciar softwares" update=":admin" icon="ui-icon-arrowrefresh-1-w" />
+                        </p:submenu>
+                    </p:column>
+                </p:submenu>
+                <p:submenu label="Editar" icon="ui-icon-pencil">
+                    <p:column>
+                        <p:submenu label="#{sessionScope['usuario-logado'].nome}">
+                            <p:menuitem action="#{usuarioBean.exibeTabela(false, false, true, false)}" value="Alterar dados" update=":admin">
+                                <f:actionListener binding="#{usuarioBean.enviaUsuarioParaAtualizar()}"/>
+                            </p:menuitem>
+                        </p:submenu>
+                    </p:column>
+                </p:submenu>
+                <p:submenu label="Cadastrar Administrador" icon="ui-icon-person" >
+                    <p:column>
+                        <p:submenu label="Adicionar">
+                            <p:menuitem actionListener="#{usuarioBean.exibeTabela(false, false, false, true)}" value="Adicionar" update=":admin">
+                                <f:actionListener binding="#{usuarioBean.novo()}"/>
+                            </p:menuitem>
+                        </p:submenu>
+                    </p:column>
+                </p:submenu> 
+                <p:menuitem value="Sair" action="#{validador.logout}"  icon="ui-icon-close" update=":admin"/>
+            </p:megaMenu>
+        </h:form>
+        <hr/>
+        <ui:insert></ui:insert>
+    </h:body>
+</html>
+
